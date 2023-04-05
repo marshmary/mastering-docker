@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+
+  # API Gateway service
+  api-gw:
+    build:
+      context: ApiGw
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:80
+    networks:
+      - mastering-docker-backend-network
+    depends_on:
+      - author-api
+      - novel-api
+
+  # Author API service
+  author-api:
+    build:
+      context: AuthorService/
+      dockerfile: ./Dockerfile
+    networks:
+      - mastering-docker-backend-network
+  
+  # Novel API service
+  novel-api:
+    build:
+      context: NovelService/
+      dockerfile: ./Dockerfile
+    depends_on:
+      - author-api
+    networks:
+      - mastering-docker-backend-network
+
+networks:
+  mastering-docker-backend-network:
+    driver: bridge
+
+volumes:
+  sqlserverdata:
